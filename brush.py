@@ -11,8 +11,8 @@ class Coordinate:
         return False
 
 class Brush:
-    def __init__(self, coord1, coord2, coord3, texturename):
-        self.coord1 = coord1
-        self.coord2 = coord2
-        self.coord3 = coord3
+    def __init__(self, point1, point2, point3, texturename):
+        self.point1 = point1
+        self.point2 = point2
+        self.point3 = point3
         self.texturename = texturename
