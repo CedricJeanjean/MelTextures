@@ -49,19 +49,22 @@ class Map:
         coordinates = re.findall(r'\((.*?)\)', result)
         return Brush(point1=Coordinate(coordinates[0]),point2=Coordinate(coordinates[1]),point3=Coordinate(coordinates[2]), texturename=texturename)
 
+    #Retourne un tableau avec tous les brushs de l'élément
     def get_brush(self, line, ind):
+        brushs = []
         while(line.startswith("(")):
             #Parse du cube
-            cube_brush = self.parse_cube_text(line)
-            if(cube_brush.texturename != "caulk"):
-                return cube_brush
+            #cube_brush = self.parse_cube_text(line)
+            #if(cube_brush.texturename != "caulk"):
+            #    return cube_brush
+            brushs.append(self.parse_cube_text(line))
             
             #Si la texture est caulk, on continue
             ind += 1
             line = self.lines[ind].strip()
         
         #Si toutes les textures du brush sont caulk, on l'ignore, il ne doit pas être affiché
-        return None
+        return brushs
 
     #Parcours du map et récupére les coordonnées avec la texture
     def parse_map_file(self):
@@ -80,9 +83,9 @@ class Map:
 
             #Récupération des brushs
             if(linetext.startswith("// brush") and linetext_start_content.startswith("(")):
-                brush = self.get_brush(linetext_start_content, ind_start_content)
-                if brush != None:
-                    self.brushs.append(brush)
+                brushs = self.get_brush(linetext_start_content, ind_start_content)
+                if len(brushs) != 0:
+                    self.brushs.append(brushs)
             elif(linetext_start_content.startswith("curve") or linetext_start_content.startswith("mesh")):
                 #Les curves et meshs commencent 2 lignes plus tard
                 ind_start_content += 2
@@ -91,7 +94,7 @@ class Map:
                 if curvebrush != None:
                     self.brushscurve.append(curvebrush)
                     #Dans certains cas complexes, les curves sont traitées comme des brushs normaux dans mel
-                    self.brushs.append(curvebrush)
+                    self.brushs.append([curvebrush])
 
     def __init__(self, map_path):
         f = open(map_path, "r")
